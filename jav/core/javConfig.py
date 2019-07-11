@@ -119,6 +119,11 @@ class Config(object):
                     , 'description': 'URL of the page to be sent via slack'
                     , 'default': 'github.io page'
                 }
+                , 'namespace': {
+                    'type': ['string','null']
+                    , 'description': 'Which project are the stats for'
+                    , 'default': 'none'
+                }
             }
         }
 

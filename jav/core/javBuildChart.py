@@ -310,7 +310,7 @@ class BuildChart(object):
         ], sizing_mode='stretch_both')
 
         # output to static HTML file
-        output_file(self.config.filepath_charts + 'index.html',
+        output_file(self.config.filepath_charts + self.config.get_config_value('namespace') + 'index.html',
                     title='[' + self.time.get_current_date().strftime(
                         "%Y-%m-%d") + '] - Jira Metrics, built on: ' + self.time.get_current_date().strftime(
                         "%Y-%m-%d"))

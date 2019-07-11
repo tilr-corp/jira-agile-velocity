@@ -92,6 +92,38 @@ class javBaseController(ArgparseController):
 
         Msg(self.app.log, config, self.app.pargs.send).publish(stats_days, stats_weeks, stats_remaining)
 
+
+
+    @expose(help='Run several configs')
+    def many(self):
+        config = Config(self.app.log, self.app.pargs.path_config)
+        LogConfig(self.app.log, self.app.config, config.config_path + 'run.log')
+
+        # Load data from Jira
+        load = Load(self.app.log, self.app.config)
+        daily_data, remaining_work = load.refresh_jira_cache()
+
+        # Crunch numbers
+        crunch = Crunch(self.app.log, config)
+        stats_days, stats_weeks, stats_remaining = crunch.crunch_stats(daily_data, remaining_work)
+
+        # Build Chart
+        BuildChart(self.app.log, config).main(stats_days, stats_weeks, stats_remaining)
+
+        # Publish Chart
+
+        # UNCOMMENT
+        # PublishGithubPage(self.app.log, config).main()
+
+        #Get previously crunched number from cache file, to avoid the issue with json index key conversion
+        # Issue, there is no numerical indexes in json, only strings.
+        stats_days, stats_weeks, stats_remaining = crunch.load_stats_cache()
+
+        # Message Team
+        Msg(self.app.log, config, self.app.pargs.send).publish(stats_days, stats_weeks, stats_remaining)
+
+
+
     @expose(help='Get data, crunch numbers, do stuff')
     def run(self):
         config = Config(self.app.log, self.app.pargs.path_config)
@@ -109,7 +141,9 @@ class javBaseController(ArgparseController):
         BuildChart(self.app.log, config).main(stats_days, stats_weeks, stats_remaining)
 
         # Publish Chart
-        PublishGithubPage(self.app.log, config).main()
+
+        # UNCOMMENT
+        # PublishGithubPage(self.app.log, config).main()
 
         #Get previously crunched number from cache file, to avoid the issue with json index key conversion
         # Issue, there is no numerical indexes in json, only strings.
