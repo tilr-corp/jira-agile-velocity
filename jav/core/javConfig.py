@@ -11,7 +11,7 @@ class Config(object):
         Class in charge to configuration management
     """
 
-    def __init__(self, log, config_path = expanduser('~') + '/.jav/', config_values = None):
+    def __init__(self, log, config_path = expanduser('~') + '/.jav/', config_values = {}):
         self.log = log
         self.__config_path = self.prep_config_path(config_path)
         self.__config_filename = 'config.yml'
@@ -122,7 +122,7 @@ class Config(object):
             }
         }
 
-        if self.config is not None:
+        if self.config:
             self.log.info('Default configuration provided as part of class initialization')
         elif os.path.isdir(self.__config_path) is False or os.path.isfile(self.__config_filepath) is False:
             self.__config_init = self.init_config()
@@ -270,16 +270,17 @@ class Config(object):
 
         # Note: https://stackoverflow.com/questions/10885537/raw-input-has-been-eliminated-from-python-3-2
         # https://stackoverflow.com/questions/21731043/use-of-input-raw-input-in-python-2-and-3
-        try:
-            input = raw_input
-        except NameError:
-            pass
+        
+        # try:
+        #     input = raw_input
+        # except NameError:
+        #     pass
 
         try:
             config_value = input('[' + str(value_suggested) + ']:')
-        except Exception as ex:
+        except Exception as e:
             # If exception, we consider the value to be empty (fallback to default)
-            self.log.debug(ex.message)
+            self.log.debug(e.message)
             config_value = ''
 
         self.log.debug('Received value: ' + config_value)
