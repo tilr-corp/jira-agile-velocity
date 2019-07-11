@@ -109,7 +109,7 @@ class javBaseController(ArgparseController):
         BuildChart(self.app.log, config).main(stats_days, stats_weeks, stats_remaining)
 
         # Publish Chart
-        # PublishGithubPage(self.app.log, config).main()
+        PublishGithubPage(self.app.log, config).main()
 
         #Get previously crunched number from cache file, to avoid the issue with json index key conversion
         # Issue, there is no numerical indexes in json, only strings.
