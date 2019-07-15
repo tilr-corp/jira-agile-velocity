@@ -232,6 +232,15 @@ class BuildChart(object):
 
         dat = pd.DataFrame(plot_values, columns=['entity', 'value', 'jira_url'])
         source = self.get_remaining_source(dat)
+
+        # getting rid of last name so x-axis of graph doesn't have overlapping text --> comment out code up to ***** if want full names again
+        first_names =[]
+        for person in dat.entity:
+            person = person.split(' ',1)[0]
+            first_names.append(person)
+        dat['entity'] = first_names
+        # *****
+
         # Declare tools
         hover = HoverTool(
             tooltips=[

@@ -34,16 +34,25 @@ class javBaseController(ArgparseController):
 
     @expose(help='Clear previous data (USE WITH CAUTION)')
     def clear(self):
-        config = Config(self.app.log, self.app.pargs.path_config)
-        LogConfig(self.app.log, self.app.config, config.config_path + 'clear.log')
+        mypath = expanduser('~') + '/.jav/'
+        onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+        only_ymls = [f for f in onlyfiles if f.startswith('config_') and f.endswith('.yml')]
 
-        clear = Clear(self.app.log, config)
-        clear.main()
+        for single_config in only_ymls:
+            config = Config(self.app.log, self.app.pargs.path_config, {}, single_config)
+            LogConfig(self.app.log, self.app.config, config.config_path + 'clear.log')
+            clear = Clear(self.app.log, config)
+            clear.main()
 
     @expose(help='Enter setup mode and provide configuration parameters (jira creds, slack details)')
     def setup(self):
-        setup = Setup(self.app.log, self.app.config)
-        setup.main()
+        mypath = expanduser('~') + '/.jav/'
+        onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+        only_ymls = [f for f in onlyfiles if f.startswith('config_') and f.endswith('.yml')]
+
+        for single_config in only_ymls:
+            setup = Setup(self.app.log, single_config)
+            setup.main()
 
     @expose(help='Load latest data from Jira into cache')
     def load(self):
@@ -127,7 +136,7 @@ class javBaseController(ArgparseController):
             # stats_days, stats_weeks, stats_remaining = crunch.load_stats_cache()
 
             # # Message Team
-            Msg(self.app.log, config, True).publish(stats_days, stats_weeks, stats_remaining)
+            # Msg(self.app.log, config, True).publish(stats_days, stats_weeks, stats_remaining)
 
 
 
