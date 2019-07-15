@@ -11,18 +11,20 @@ class Config(object):
         Class in charge to configuration management
     """
 
-    def __init__(self, log, config_path = expanduser('~') + '/.jav/', config_values = {}):
+    # version 2 - create a separate config folder within .jav
+    def __init__(self, log, config_path = expanduser('~') + '/.jav/', config_values = {}, config_filename = 'config.yml'):
         self.log = log
         self.__config_path = self.prep_config_path(config_path)
-        self.__config_filename = 'config.yml'
+        self.__config_filename = config_filename
         self.__config_filepath = self.__config_path + self.__config_filename
+        namespace = config_filename[(config_filename.index('_')+1): config_filename.index('.')]
 
-        self.__filepath_data_completion = self.__config_path + 'data_completion.jsonl'
-        self.__filepath_data_remaining = self.__config_path + 'data_remaining.json'
+        self.__filepath_data_completion = self.__config_path + namespace + '_data_completion.jsonl'
+        self.__filepath_data_remaining = self.__config_path + namespace + '_data_remaining.json'
 
-        self.__filepath_stats_days = self.__config_path + 'stats_days.jsonl'
-        self.__filepath_stats_weeks = self.__config_path + 'stats_weeks.jsonl'
-        self.__filepath_stats_remaining = self.__config_path + 'stats_remaining.jsonl'
+        self.__filepath_stats_days = self.__config_path + namespace + '_stats_days.jsonl'
+        self.__filepath_stats_weeks = self.__config_path + namespace + '_stats_weeks.jsonl'
+        self.__filepath_stats_remaining = self.__config_path + namespace + '_stats_remaining.jsonl'
 
         self.__filepath_charts = self.prep_config_path(self.__config_path + 'built-charts/')
 
