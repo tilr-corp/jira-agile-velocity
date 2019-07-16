@@ -86,6 +86,13 @@ class StatsDay(object):
                                 self.days[day_txt][stats_type][week_idx]['max'] = max(
                                     self.days[day_txt][stats_type]['all']['values'])
 
+                print('&&&&&&&&&&&&&&')
+                print(f"Current Day: {current_day}, Scan Day: {scan_day}")
+                print(f"Object {self.daily_data[current_day]['datetime'].__class__}, Value: {self.daily_data[current_day]['datetime']}")
+                print(f"Scan Object {self.daily_data[scan_day]['datetime'].__class__}, Value: {self.daily_data[scan_day]['datetime']}")
+
+
+                print(self.daily_data[scan_day])
                 if self.daily_data[current_day]['datetime'].date() == self.daily_data[scan_day]['datetime'].date():
                     day_found = True
 

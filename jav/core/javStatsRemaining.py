@@ -47,7 +47,13 @@ class StatsRemaining(object):
                 avg_elements_per_day) + ' should completed in: ' + str(remaining_days) + ' days')
             remaining['days_to_completion'][week_stat] = remaining_days
 
+        print('##############')
+        print(current_week)
+        print(self.config.get_config_value('stats_metric'))
         current_element_per_day = current_week[self.config.get_config_value('stats_metric')] / current_week['days']
+        print(current_element_per_day)
+        if (current_element_per_day == 0):
+            current_element_per_day = 1
         remaining_days = round(remaining[self.config.get_config_value('stats_metric')] / current_element_per_day, 1)
         remaining['days_to_completion']['current'] = remaining_days
         self.log.info('This week, average ' + self.config.get_config_value('stats_metric') + ' per day is: ' + str(
