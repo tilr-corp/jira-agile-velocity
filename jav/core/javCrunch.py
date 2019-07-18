@@ -21,9 +21,9 @@ class Crunch(object):
         # Calculate stats based on Jira Data
         stats_weeks = StatsWeek(self.log, self.config, daily_data).main()
         stats_days = StatsDay(self.log, self.config, daily_data).main()
-        print('--------------')
-        print(stats_weeks)
-        print(remaining_work)
+        # print('--------------')
+        # print(stats_weeks)
+        # print(remaining_work)
         stats_remaining = StatsRemaining(self.log, self.config, self.time, stats_weeks, remaining_work).main()
 
         return stats_days, stats_weeks, stats_remaining

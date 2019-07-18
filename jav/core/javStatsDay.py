@@ -3,6 +3,7 @@ import numpy
 import os
 import copy
 from jav.core.javFiles import Files
+from datetime import datetime, date
 
 
 class StatsDay(object):
@@ -86,14 +87,22 @@ class StatsDay(object):
                                 self.days[day_txt][stats_type][week_idx]['max'] = max(
                                     self.days[day_txt][stats_type]['all']['values'])
 
-                print('&&&&&&&&&&&&&&')
-                print(f"Current Day: {current_day}, Scan Day: {scan_day}")
-                print(f"Object {self.daily_data[current_day]['datetime'].__class__}, Value: {self.daily_data[current_day]['datetime']}")
-                print(f"Scan Object {self.daily_data[scan_day]['datetime'].__class__}, Value: {self.daily_data[scan_day]['datetime']}")
+                # print('&&&&&&&&&&&&&&')
+                # print(f"Current Day: {current_day}, Scan Day: {scan_day}")
+                # print(f"Object {self.daily_data[current_day]['datetime'].__class__}, Value: {self.daily_data[current_day]['datetime']}")
+                # print(f"Scan Object {self.daily_data[scan_day]['datetime'].__class__}, Value: {self.daily_data[scan_day]['datetime']}")
 
+                # print(f"testing: {isinstance(self.daily_data[current_day]['datetime'], datetime)}")
 
-                print(self.daily_data[scan_day])
-                if self.daily_data[current_day]['datetime'].date() == self.daily_data[scan_day]['datetime'].date():
+                # print(self.daily_data[scan_day])
+                if isinstance(self.daily_data[current_day]['datetime'], datetime):
+                    current_day_datetime = self.daily_data[current_day]['datetime'].date()
+                    scan_day_datetime = self.daily_data[scan_day]['datetime'].date()
+                else:
+                    current_day_datetime = self.daily_data[current_day]['datetime']
+                    scan_day_datetime = self.daily_data[scan_day]['datetime']
+
+                if current_day_datetime == scan_day_datetime:
                     day_found = True
 
         # Then write content to a JSONL file
