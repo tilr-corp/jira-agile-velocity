@@ -48,6 +48,9 @@ class StatsRemaining(object):
             remaining['days_to_completion'][week_stat] = remaining_days
 
         current_element_per_day = current_week[self.config.get_config_value('stats_metric')] / current_week['days']
+        # FIX THIS IN A BETTER WAY!!! -> Divide by zero
+        if (current_element_per_day == 0):
+            current_element_per_day = 1
         remaining_days = round(remaining[self.config.get_config_value('stats_metric')] / current_element_per_day, 1)
         remaining['days_to_completion']['current'] = remaining_days
         self.log.info('This week, average ' + self.config.get_config_value('stats_metric') + ' per day is: ' + str(

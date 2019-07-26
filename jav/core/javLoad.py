@@ -9,15 +9,14 @@ class Load(object):
     """
         Load updated Jira data into cache
     """
-    def __init__(self, log, app_config):
+    def __init__(self, log, app_config, single_config = 'config.yml'):
         self.log = log
-        self.config = Config(self.log)
+        self.config = Config(self.log, config_filename=single_config)
         self.time = Time(self.log, self.config)
         self.log_config = LogConfig(self.log, app_config, self.config.config_path + 'load.log')
 
     def refresh_jira_cache(self):
         self.log.info('Load updated data from Jira into Cache')
-
         date_start = self.time.get_current_date()
         date_end = self.time.get_end_date()
         self.log.info('Load.main(): Start Date: ' + date_start.strftime('%Y-%m-%d'))

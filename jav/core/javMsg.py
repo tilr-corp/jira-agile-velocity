@@ -1,4 +1,6 @@
 import slackweb
+import requests
+import json
 
 class Msg(object):
     """
@@ -9,16 +11,11 @@ class Msg(object):
         self.log = log
         self.config = config
         self.__send = send
-        if self.send:
-            self.__slack = slackweb.Slack(url=self.config.get_config_value('slack_webhook'))
+        print(self.config.get_config_value('slack_webhook'))
 
     @property
     def send(self):
         return self.__send
-
-    @property
-    def slack(self):
-        return self.__slack
 
     def publish(self, stats_days, stats_weeks, stats_remaining):
         remaining = []
@@ -38,31 +35,31 @@ class Msg(object):
             week_estimate = None
             if stats_weeks[scan_week]['days'] < 5:
                 days_remaining = 5 - stats_weeks[scan_week]['days']
-                points_remaining = days_remaining * stats_weeks[scan_week]['stats']['4']['avg']
+                points_remaining = days_remaining * stats_weeks[scan_week]['stats'][4]['avg']
                 week_estimate = points_remaining + stats_weeks[scan_week]['points']
             break
 
-        if daily_metric > daily_velocity['sameday']['4']['avg']:
+        if daily_metric > daily_velocity['sameday'][4]['avg']:
             trend_day = ':arrow_upper_right:'
-        elif daily_metric < daily_velocity['sameday']['4']['avg']:
+        elif daily_metric < daily_velocity['sameday'][4]['avg']:
             trend_day = ':arrow_lower_right:'
         else:
             trend_day = ':arrow_right:'
 
         if week_estimate is None:
-            if weekly_metric > weekly_velocity['4']['avg']:
+            if weekly_metric > weekly_velocity[4]['avg']:
                 trend_week = ':arrow_upper_right:'
-            elif weekly_metric < weekly_velocity['4']['avg']:
+            elif weekly_metric < weekly_velocity[4]['avg']:
                 trend_week = ':arrow_lower_right:'
             else:
                 trend_week = ':arrow_right:'
         else:
-            if week_estimate > weekly_velocity['4']['avg']:
-                trend_week = ':arrow_upper_right: (Est: ' + week_estimate + ')'
-            elif week_estimate < weekly_velocity['4']['avg']:
-                trend_week = ':arrow_lower_right: (Est: ' + week_estimate + ')'
+            if week_estimate > weekly_velocity[4]['avg']:
+                trend_week = ':arrow_upper_right: (Est: ' + str(week_estimate) + ')'
+            elif week_estimate < weekly_velocity[4]['avg']:
+                trend_week = ':arrow_lower_right: (Est: ' + str(week_estimate) + ')'
             else:
-                trend_week = ':arrow_right: (Est: ' + week_estimate + ')'
+                trend_week = ':arrow_right: (Est: ' + str(week_estimate) + ')'
 
         if self.config.get_config_value('stats_metric') == 'tickets':
             metric_legend = 'Tickets'
@@ -72,32 +69,32 @@ class Msg(object):
             metric_short = 'pts'
 
         self.slack_msg('Howdy everyone, here are our velocity stats, <'
-                       + self.config.get_config_value('git_pageurl')
+                       
                        + '|live from Jira>.'
                        + '\n'
                        + 'Remaining ' + metric_legend + ': *'
                        + str(remaining_pts)
                        + '*\n'
                        + 'Completed on ' + day_txt + ': ' + str(daily_metric) + ' ' + metric_short + ' ['
-                       + 'Max: ' + str(daily_velocity['sameday']['4']['max'])
+                       + 'Max: ' + str(daily_velocity['sameday'][4]['max'])
                        + ' / '
-                       + 'Min: ' + str(daily_velocity['sameday']['4']['min'])
+                       + 'Min: ' + str(daily_velocity['sameday'][4]['min'])
                        + ' / '
-                       + 'Avg: ' + str(daily_velocity['sameday']['4']['avg'])
+                       + 'Avg: ' + str(daily_velocity['sameday'][4]['avg'])
                        + '] '
                        + trend_day
                        + '\n'
                        + 'Completed this week (' + week_txt + '): ' + str(weekly_metric) + ' ' + metric_short + ' ('
-                       + 'Max: ' + str(weekly_velocity['4']['max'])
+                       + 'Max: ' + str(weekly_velocity[4]['max'])
                        + ' / '
-                       + 'Min: ' + str(weekly_velocity['4']['min'])
+                       + 'Min: ' + str(weekly_velocity[4]['min'])
                        + ' / '
-                       + 'Avg: ' + str(weekly_velocity['4']['avg'])
+                       + 'Avg: ' + str(weekly_velocity[4]['avg'])
                        + ') '
                        + trend_week
                        + '\n'
                        + 'Days to Completion: *'
-                       + str(round(remaining['4'], 1))
+                       + str(round(remaining[4], 1))
                        + ' days'
                        + '*\n'
                        + '_Most numbers are calculated over previous 4 weeks, excluding current day/week_'
@@ -106,4 +103,14 @@ class Msg(object):
     def slack_msg(self, msg):
         self.log.info(msg)
         if self.send:
-            self.slack.notify(text=msg, channel=self.config.get_config_value('slack_channel'))
+            webhook_url = self.config.get_config_value('slack_webhook')
+            slack_data = json.dumps({'text': msg})
+            response = requests.post(
+                webhook_url, data=slack_data,
+            headers={'Content-Type': 'application/json'}
+            )
+            if response.status_code != 200:
+                raise ValueError(
+                    'Request to slack returned an error %s, the response is:\n%s'
+                    % (response.status_code, response.text)
+                )
