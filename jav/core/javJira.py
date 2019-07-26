@@ -26,6 +26,8 @@ class Jira(object):
             "%Y-%m-%d") + '\")'
         if self.config.get_config_value('person'):
             jira_query = jira_query + 'AND assignee in (' + self.config.get_config_value('person') + ')'
+        print('*********************')
+        print(jira_query)
         result = self.call(jira_query).json()
         if self.test_jira_result(jira_query, result):
             return result
