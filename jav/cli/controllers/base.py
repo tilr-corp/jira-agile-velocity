@@ -128,15 +128,15 @@ class javBaseController(ArgparseController):
 
             # # Publish Chart
 
-            # # UNCOMMENT
-            # # PublishGithubPage(self.app.log, config).main()
+            # UNCOMMENT
+            PublishGithubPage(self.app.log, config).main()
 
-            # #Get previously crunched number from cache file, to avoid the issue with json index key conversion
-            # # Issue, there is no numerical indexes in json, only strings.
-            # stats_days, stats_weeks, stats_remaining = crunch.load_stats_cache()
+            #Get previously crunched number from cache file, to avoid the issue with json index key conversion
+            # Issue, there is no numerical indexes in json, only strings.
+            stats_days, stats_weeks, stats_remaining = crunch.load_stats_cache()
 
             # # Message Team
-            # Msg(self.app.log, config, True).publish(stats_days, stats_weeks, stats_remaining)
+            Msg(self.app.log, config, True).publish(stats_days, stats_weeks, stats_remaining)
 
 
 

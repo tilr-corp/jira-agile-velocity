@@ -1,6 +1,7 @@
 from jav.core.javFiles import Files
 from jav.core.javGithub import Github
 from jav.core.javTime import Time
+from datetime import date
 import os
 import shutil
 
@@ -59,7 +60,7 @@ class PublishGithubPage(object):
         dst_path = Files.prep_path(
             self.config.get_config_value('git_localpath') + self.config.get_config_value('git_pathdirectory'))
         self.log.info('Preparing to copy chart file to: ' + dst_path)
-        shutil.copyfile(self.config.filepath_charts + 'index.html', dst_path + 'index.html')
+        shutil.copyfile(self.config.filepath_charts + self.config.get_config_value('namespace') + 'index.html', dst_path + 'index_{}.html'.format(date.today()))
         self.log.info('Chart file copied')
         self.github.git_add('--all')
         self.github.git_commit('Copied chart file - ' + self.time.get_current_date().isoformat())
