@@ -213,6 +213,11 @@ class Config(object):
         """Get a single value of the dictionary"""
         return self.config[key]
 
+    def get_config_value_or_default(self, key, default):
+        if key in self.config:
+            return self.get_config_value(key)
+        return default
+
     def set_config_value(self, key, value):
         """Updates a key/value pair in the config, verify it against the schema before updating config"""
         value_init = None
