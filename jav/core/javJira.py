@@ -24,6 +24,8 @@ class Jira(object):
                 "%Y-%m-%d"))
         jira_query = self.config.get_config_value('jira_jql_velocity') + ' ON(\"' + date_current.strftime(
             "%Y-%m-%d") + '\")'
+        if self.config.get_config_value('person'):
+            jira-query = jira_query + 'AND assignee in (' + self.config.get_config_value('person') + ')'
         result = self.call(jira_query).json()
         if self.test_jira_result(jira_query, result):
             return result

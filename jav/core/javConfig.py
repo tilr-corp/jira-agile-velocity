@@ -126,6 +126,11 @@ class Config(object):
                     , 'description': 'Which project are the stats for'
                     , 'default': 'none'
                 }
+                , 'person': {
+                    'type': ['string','null']
+                    , 'description': 'Which person are the stats for'
+                    , 'default': ''
+                }
             }
         }
 
