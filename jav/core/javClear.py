@@ -3,7 +3,7 @@ import os
 
 class Clear(object):
     """
-        Classe used to clear previously processed data
+        Class used to clear previously processed data
     """
 
     def __init__(self, log, config):

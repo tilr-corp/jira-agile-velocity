@@ -24,6 +24,7 @@ class Jira(object):
                 "%Y-%m-%d"))
         jira_query = self.config.get_config_value('jira_jql_velocity') + ' ON(\"' + date_current.strftime(
             "%Y-%m-%d") + '\")'
+        print(jira_query)
         result = self.call(jira_query).json()
         if self.test_jira_result(jira_query, result):
             return result
@@ -58,6 +59,9 @@ class Jira(object):
                                    auth=(
                                        self.config.get_config_value('jira_username'),
                                        self.config.get_config_value('jira_password')))
+            print(tickets)
+            print(tickets.content)
+
             return tickets
         except Exception as ex:
             # ConnectionError
